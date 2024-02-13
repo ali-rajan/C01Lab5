@@ -28,7 +28,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: npm i
+      - run: curl -L https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+      - run: LATEST_MONGO_VERSION=$(. /etc/os-release && curl -L repo.mongodb.org/apt/${ID}/dists/${VERSION_CODENAME}/mongodb-org | grep -Eo '[0-9]+\.[0-9]+' | sort -V | tail -1)
+      - run: (. /etc/os-release && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/${ID} ${VERSION_CODENAME}/mongodb-org/${LATEST_MONGO_VERSION} multiverse") | sudo tee /etc/apt/sources.list.d/mongodb-org-${LATEST_MONGO_VERSION}.list
+      - run: sudo apt update
       - run: sudo apt install mongodb-org
-      - run: mongod --dbpath=./data/db
+      - run: sudo systemctl start mongod.service
       - run: npm run dev
       - run: npm test
