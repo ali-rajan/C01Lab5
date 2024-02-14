@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Backend test
+    name: Backend test (20.x)
     runs-on: ubuntu-latest
 
     defaults:
